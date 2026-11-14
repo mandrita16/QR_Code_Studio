@@ -28,7 +28,7 @@ QR Studio is a customizable QR Code Generator built using Python and Flask. It a
 ## 📂 Project Structure
 
 ```text
-QR_Studio/
+QR_Code_Studio/
 │
 ├── app.py
 ├── requirements.txt
@@ -52,13 +52,13 @@ QR_Studio/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/mandrita16/QR_Studio.git
+git clone https://github.com/mandrita16/QR_Code_Studio.git
 ```
 
 ### 2. Navigate to the project directory
 
 ```bash
-cd QR_Studio
+cd QR_Code_Studio
 ```
 
 ### 3. Create a virtual environment
