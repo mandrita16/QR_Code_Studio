@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>QR Studio | QR Code Generator</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <div class="logo">
+            <span>▦</span>
+            QR Studio
+        </div>
+
+        <p>Create, customize and download QR codes instantly.</p>
+
+    </header>
+
+    <!-- MAIN DASHBOARD -->
+
+    <main class="dashboard">
+
+        <!-- GENERATOR SECTION -->
+
+        <section class="card generator">
+
+            <h2>Generate QR Code</h2>
+
+            <p class="subtitle">
+                Enter your information below.
+            </p>
+
+            <form method="POST" action="/">
+
+                <label for="data">
+                    Text or Website URL
+                </label>
+
+                <textarea
+                    id="data"
+                    name="data"
+                    placeholder="https://example.com"
+                    maxlength="2000"
+                    required>{{ data }}</textarea>
+
+                <!-- COLOR OPTIONS -->
+
+                <div class="color-section">
+
+                    <div class="color-box">
+
+                        <label for="fill_color">
+                            QR Color
+                        </label>
+
+                        <input
+                            type="color"
+                            id="fill_color"
+                            name="fill_color"
+                            value="{{ fill_color }}">
+
+                    </div>
+
+                    <div class="color-box">
+
+                        <label for="back_color">
+                            Background Color
+                        </label>
+
+                        <input
+                            type="color"
+                            id="back_color"
+                            name="back_color"
+                            value="{{ back_color }}">
+
+                    </div>
+
+                </div>
+
+                <button type="submit" class="generate-btn">
+
+                    Generate QR Code
+
+                </button>
+
+            </form>
+
+            {% if error %}
+
+                <div class="error">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+        </section>
+
+        <!-- PREVIEW SECTION -->
+
+        <section class="card preview">
+
+            <h2>QR Preview</h2>
+
+            <p class="subtitle">
+                Your generated QR code appears here.
+            </p>
+
+            {% if qr_image %}
+
+                <div class="qr-container">
+
+                    <img
+                        src="{{ url_for('static', filename='generated/' + qr_image) }}"
+                        alt="Generated QR Code">
+
+                </div>
+
+                <a
+                    class="download-btn"
+                    href="{{ url_for('download', filename=qr_image) }}">
+
+                    Download PNG
+
+                </a>
+
+            {% else %}
+
+                <div class="placeholder">
+
+                    <div class="placeholder-icon">
+                        ▦
+                    </div>
+
+                    <p>No QR code generated yet.</p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+    <!-- HISTORY SECTION -->
+
+    <section class="card history">
+
+        <div class="history-header">
+
+            <div>
+
+                <h2>Recent QR Codes</h2>
+
+                <p class="subtitle">
+                    Your last 10 generated QR codes.
+                </p>
+
+            </div>
+
+            <span class="history-count">
+                {{ history|length }} Records
+            </span>
+
+        </div>
+
+        {% if history %}
+
+            <div class="history-list">
+
+                {% for item in history %}
+
+                    <div class="history-item">
+
+                        <div class="history-info">
+
+                            <strong>
+                                {{ item.data }}
+                            </strong>
+
+                            <small>
+                                {{ item.created_at }}
+                            </small>
+
+                        </div>
+
+                        <a
+                            class="history-download"
+                            href="{{ url_for('download', filename=item.filename) }}">
+
+                            Download
+
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-history">
+
+                No QR codes generated yet.
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        Built with Python, Flask and SQLite.
+
+    </footer>
+
+</div>
+
+</body>
+
+</html>
