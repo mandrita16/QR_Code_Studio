@@ -100,6 +100,7 @@ Visit:
 ```text
 http://127.0.0.1:5000
 ```
+<img width="1920" height="1011" alt="image" src="https://github.com/user-attachments/assets/de742d5c-d7fd-4f19-8d70-7223fce02167" />
 
 ## 🚀 How It Works
 
