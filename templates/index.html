@@ -3,17 +3,13 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>QR Studio | QR Code Generator</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
-
 </head>
 
 <body>
@@ -21,7 +17,6 @@
 <div class="container">
 
     <!-- HEADER -->
-
     <header class="header">
 
         <div class="logo">
@@ -34,11 +29,9 @@
     </header>
 
     <!-- MAIN DASHBOARD -->
-
     <main class="dashboard">
 
-        <!-- GENERATOR SECTION -->
-
+        <!-- GENERATOR -->
         <section class="card generator">
 
             <h2>Generate QR Code</h2>
@@ -61,7 +54,6 @@
                     required>{{ data }}</textarea>
 
                 <!-- COLOR OPTIONS -->
-
                 <div class="color-section">
 
                     <div class="color-box">
@@ -95,25 +87,20 @@
                 </div>
 
                 <button type="submit" class="generate-btn">
-
                     Generate QR Code
-
                 </button>
 
             </form>
 
             {% if error %}
-
                 <div class="error">
                     {{ error }}
                 </div>
-
             {% endif %}
 
         </section>
 
-        <!-- PREVIEW SECTION -->
-
+        <!-- QR PREVIEW -->
         <section class="card preview">
 
             <h2>QR Preview</h2>
@@ -127,14 +114,15 @@
                 <div class="qr-container">
 
                     <img
-                        src="{{ url_for('static', filename='generated/' + qr_image) }}"
+                        src="data:image/png;base64,{{ qr_image }}"
                         alt="Generated QR Code">
 
                 </div>
 
                 <a
                     class="download-btn"
-                    href="{{ url_for('download', filename=qr_image) }}">
+                    href="data:image/png;base64,{{ qr_image }}"
+                    download="qr-studio-code.png">
 
                     Download PNG
 
@@ -159,7 +147,6 @@
     </main>
 
     <!-- HISTORY SECTION -->
-
     <section class="card history">
 
         <div class="history-header">
@@ -200,14 +187,6 @@
 
                         </div>
 
-                        <a
-                            class="history-download"
-                            href="{{ url_for('download', filename=item.filename) }}">
-
-                            Download
-
-                        </a>
-
                     </div>
 
                 {% endfor %}
@@ -217,9 +196,7 @@
         {% else %}
 
             <div class="empty-history">
-
                 No QR codes generated yet.
-
             </div>
 
         {% endif %}
@@ -227,15 +204,11 @@
     </section>
 
     <!-- FOOTER -->
-
     <footer>
-
-        Built with Python, Flask and SQLite.
-
+        Built with Python, Flask and QR Technology.
     </footer>
 
 </div>
 
 </body>
-
 </html>
