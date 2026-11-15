@@ -1,12 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>QR Studio | QR Code Generator</title>
+    <meta name="theme-color" content="#05030f">
+    <title>QR Studio | Cybernetic Edition</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
@@ -14,36 +17,82 @@
 
 <body>
 
+<div class="ambient ambient-one"></div>
+<div class="ambient ambient-two"></div>
+<div class="stars"></div>
+
 <div class="container">
 
-    <!-- HEADER -->
-    <header class="header">
+    <!-- NAVIGATION -->
 
-        <div class="logo">
-            <span>▦</span>
-            QR Studio
+    <nav class="navbar">
+
+        <a href="/" class="brand">
+            <span class="brand-icon">▦</span>
+            <span>QR<span class="brand-accent">Studio</span></span>
+        </a>
+
+        <div class="nav-status">
+            <span class="status-dot"></span>
+            SYSTEM ONLINE
         </div>
 
-        <p>Create, customize and download QR codes instantly.</p>
+        <div class="nav-tech">
+            <span>PYTHON</span>
+            <span class="nav-version">V2.0</span>
+        </div>
+
+    </nav>
+
+    <!-- HERO -->
+
+    <header class="hero">
+
+        <div class="eyebrow">
+            <span>✦</span> NEXT GENERATION QR TECHNOLOGY
+        </div>
+
+        <h1>
+            TURN IDEAS INTO
+            <span class="gradient-text">QR CODES.</span>
+        </h1>
+
+        <p>
+            Create. Customize. Experience the future.
+        </p>
+
+        <div class="hero-line"></div>
 
     </header>
 
-    <!-- MAIN DASHBOARD -->
+    <!-- MAIN WORKSPACE -->
+
     <main class="dashboard">
 
-        <!-- GENERATOR -->
+        <!-- GENERATOR PANEL -->
+
         <section class="card generator">
 
-            <h2>Generate QR Code</h2>
+            <div class="panel-heading">
+
+                <div class="panel-icon">✧</div>
+
+                <div>
+                    <span class="section-tag">CONFIGURATION MODULE</span>
+                    <h2>Generate QR Code</h2>
+                </div>
+
+            </div>
 
             <p class="subtitle">
-                Enter your information below.
+                Configure your data and customize your QR experience.
             </p>
 
             <form method="POST" action="/">
 
                 <label for="data">
-                    Text or Website URL
+                    <span class="label-icon">⌁</span>
+                    TEXT OR WEBSITE URL
                 </label>
 
                 <textarea
@@ -53,91 +102,212 @@
                     maxlength="2000"
                     required>{{ data }}</textarea>
 
-                <!-- COLOR OPTIONS -->
+                <div class="input-meta">
+                    <span>SUPPORTED: TEXT / URL</span>
+                    <span id="charCount">0 / 2000</span>
+                </div>
+
                 <div class="color-section">
 
                     <div class="color-box">
+                        <label for="fill_color">QR COLOR</label>
 
-                        <label for="fill_color">
-                            QR Color
-                        </label>
-
-                        <input
-                            type="color"
-                            id="fill_color"
-                            name="fill_color"
-                            value="{{ fill_color }}">
-
+                        <div class="color-control">
+                            <input
+                                type="color"
+                                id="fill_color"
+                                name="fill_color"
+                                value="{{ fill_color }}">
+                        </div>
                     </div>
 
                     <div class="color-box">
+                        <label for="back_color">BACKGROUND COLOR</label>
 
-                        <label for="back_color">
-                            Background Color
-                        </label>
-
-                        <input
-                            type="color"
-                            id="back_color"
-                            name="back_color"
-                            value="{{ back_color }}">
-
+                        <div class="color-control">
+                            <input
+                                type="color"
+                                id="back_color"
+                                name="back_color"
+                                value="{{ back_color }}">
+                        </div>
                     </div>
 
                 </div>
 
+                <div class="color-presets">
+                    <button type="button" class="preset active"
+                            data-fill="#000000" data-back="#F3EFFF">
+                        CLASSIC
+                    </button>
+
+                    <button type="button" class="preset"
+                            data-fill="#5B21B6" data-back="#F5F3FF">
+                        VIOLET
+                    </button>
+
+                    <button type="button" class="preset"
+                            data-fill="#075985" data-back="#E0F2FE">
+                        OCEAN
+                    </button>
+
+                    <button type="button" class="preset"
+                            data-fill="#166534" data-back="#ECFDF5">
+                        MATRIX
+                    </button>
+                </div>
+
                 <button type="submit" class="generate-btn">
-                    Generate QR Code
+                    <span class="btn-sparkle">✦</span>
+                    GENERATE QR CODE
+                    <span class="btn-arrow">→</span>
                 </button>
 
             </form>
 
             {% if error %}
                 <div class="error">
-                    {{ error }}
+                    <span>⚠</span> {{ error }}
                 </div>
             {% endif %}
 
+            <div class="generator-footer">
+                <span>● ENCRYPTION NOT REQUIRED</span>
+                <span>● PYTHON ENGINE</span>
+            </div>
+
         </section>
 
-        <!-- QR PREVIEW -->
+        <!-- 3D PREVIEW PANEL -->
+
         <section class="card preview">
 
-            <h2>QR Preview</h2>
+            <div class="preview-header">
 
-            <p class="subtitle">
-                Your generated QR code appears here.
-            </p>
+                <div>
+                    <span class="section-tag">HOLOGRAPHIC DISPLAY</span>
+                    <h2>3D QR Experience</h2>
+                </div>
 
-            {% if qr_image %}
+                <span class="live-badge">
+                    <span class="status-dot"></span>
+                    LIVE
+                </span>
 
-                <div class="qr-container">
+            </div>
 
-                    <img
-                        src="data:image/png;base64,{{ qr_image }}"
-                        alt="Generated QR Code">
+            <div class="scene">
+
+                <div class="scene-grid"></div>
+
+                <div class="orbit orbit-one"></div>
+                <div class="orbit orbit-two"></div>
+
+                <div class="platform platform-top"></div>
+                <div class="platform platform-bottom"></div>
+
+                <div class="cube-shadow"></div>
+
+                <div class="cube-stage">
+
+                    <div class="qr-cube" id="qrCube">
+
+                        <!-- FRONT FACE: ACTUAL QR -->
+
+                        <div class="cube-face front">
+
+                            {% if qr_image %}
+
+                                <img
+                                    src="data:image/png;base64,{{ qr_image }}"
+                                    alt="Scannable generated QR code"
+                                    class="cube-qr">
+
+                            {% else %}
+
+                                <div class="cube-placeholder">
+                                    <span>▦</span>
+                                    <small>QR STANDBY</small>
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                        <!-- OTHER DECORATIVE FACES -->
+
+                        <div class="cube-face back">
+                            <div class="face-pattern">QR<br>STUDIO</div>
+                        </div>
+
+                        <div class="cube-face right">
+                            <div class="face-pattern">01<br>DATA</div>
+                        </div>
+
+                        <div class="cube-face left">
+                            <div class="face-pattern">02<br>CODE</div>
+                        </div>
+
+                        <div class="cube-face top">
+                            <div class="face-pattern">✦</div>
+                        </div>
+
+                        <div class="cube-face bottom">
+                            <div class="face-pattern">V2.0</div>
+                        </div>
+
+                    </div>
 
                 </div>
+
+                <div class="scene-caption">
+                    <span class="scene-caption-dot"></span>
+                    {% if qr_image %}
+                        QR OBJECT GENERATED
+                    {% else %}
+                        AWAITING QR GENERATION
+                    {% endif %}
+                </div>
+
+            </div>
+
+            <!-- 3D CONTROLS -->
+
+            <div class="cube-controls">
+
+                <button type="button" id="pauseBtn" class="control-btn">
+                    <span id="pauseIcon">Ⅱ</span>
+                    <span id="pauseText">PAUSE</span>
+                </button>
+
+                <button type="button" id="rotateLeft" class="control-btn">
+                    ↶ ROTATE
+                </button>
+
+                <button type="button" id="rotateRight" class="control-btn">
+                    ROTATE ↷
+                </button>
+
+                <button type="button" id="resetCube" class="control-btn">
+                    ↺ RESET
+                </button>
+
+            </div>
+
+            {% if qr_image %}
 
                 <a
                     class="download-btn"
                     href="data:image/png;base64,{{ qr_image }}"
                     download="qr-studio-code.png">
 
-                    Download PNG
-
+                    <span>↓</span> DOWNLOAD QR CODE PNG
                 </a>
 
             {% else %}
 
-                <div class="placeholder">
-
-                    <div class="placeholder-icon">
-                        ▦
-                    </div>
-
-                    <p>No QR code generated yet.</p>
-
+                <div class="download-disabled">
+                    Generate a QR code to enable downloading.
                 </div>
 
             {% endif %}
@@ -146,23 +316,22 @@
 
     </main>
 
-    <!-- HISTORY SECTION -->
+    <!-- HISTORY -->
+
     <section class="card history">
 
         <div class="history-header">
 
             <div>
-
-                <h2>Recent QR Codes</h2>
-
+                <span class="section-tag">LOCAL SESSION</span>
+                <h2>Recent QR Generations</h2>
                 <p class="subtitle">
-                    Your last 10 generated QR codes.
+                    Your recent generated QR entries.
                 </p>
-
             </div>
 
             <span class="history-count">
-                {{ history|length }} Records
+                {{ history|length }} RECORDS
             </span>
 
         </div>
@@ -175,16 +344,18 @@
 
                     <div class="history-item">
 
+                        <div class="history-number">
+                            {{ "%02d"|format(loop.index) }}
+                        </div>
+
                         <div class="history-info">
+                            <strong>{{ item.data }}</strong>
+                            <small>{{ item.created_at }}</small>
+                        </div>
 
-                            <strong>
-                                {{ item.data }}
-                            </strong>
-
-                            <small>
-                                {{ item.created_at }}
-                            </small>
-
+                        <div class="history-colors">
+                            <span style="background: {{ item.fill_color }}"></span>
+                            <span style="background: {{ item.back_color }}"></span>
                         </div>
 
                     </div>
@@ -196,7 +367,8 @@
         {% else %}
 
             <div class="empty-history">
-                No QR codes generated yet.
+                <span>⌁</span>
+                <p>No QR generations in this session.</p>
             </div>
 
         {% endif %}
@@ -204,11 +376,22 @@
     </section>
 
     <!-- FOOTER -->
+
     <footer>
-        Built with Python, Flask and QR Technology.
+
+        <div class="footer-line"></div>
+
+        <p>
+            ENGINEERED WITH <span>♥</span> USING PYTHON
+        </p>
+
+        <small>QR STUDIO © 2026 · CYBERNETIC EDITION</small>
+
     </footer>
 
 </div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
 </html>
