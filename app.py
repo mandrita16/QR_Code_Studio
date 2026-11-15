@@ -1,69 +1,23 @@
 
-from flask import (
-    Flask,
-    render_template,
-    request,
-    send_from_directory
-)
-
+from flask import Flask, render_template, request
 import qrcode
-import sqlite3
-import os
-import uuid
 import re
+import base64
+import logging
 
+from io import BytesIO
 from datetime import datetime
 
 
-# Initialize Flask application
+# ---------------- APPLICATION ----------------
+
 app = Flask(__name__)
 
-# Configuration
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-
-OUTPUT_FOLDER = os.path.join(
-    BASE_DIR, "static", "generated"
-)
-
-DATABASE = os.path.join(BASE_DIR, "qr_history.db")
-
-os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+app.logger.setLevel(logging.INFO)
 
 
-# ---------------- DATABASE ----------------
-
-def get_db_connection():
-
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-
-    return conn
-
-
-def init_db():
-
-    conn = get_db_connection()
-
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS qr_history (
-
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-            data TEXT NOT NULL,
-
-            filename TEXT NOT NULL,
-
-            fill_color TEXT NOT NULL,
-
-            back_color TEXT NOT NULL,
-
-            created_at TEXT NOT NULL
-
-        )
-    """)
-
-    conn.commit()
-    conn.close()
+# Temporary in-memory history
+qr_history = []
 
 
 # ---------------- VALIDATION ----------------
@@ -86,8 +40,7 @@ def generate_qr(data, fill_color, back_color):
 
         version=1,
 
-        error_correction=
-        qrcode.constants.ERROR_CORRECT_H,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
 
         box_size=10,
 
@@ -107,16 +60,19 @@ def generate_qr(data, fill_color, back_color):
 
     )
 
-    filename = f"{uuid.uuid4().hex}.png"
+    # Generate image in memory
+    buffer = BytesIO()
 
-    filepath = os.path.join(
-        OUTPUT_FOLDER,
-        filename
-    )
+    img.save(buffer, format="PNG")
 
-    img.save(filepath)
+    buffer.seek(0)
 
-    return filename
+    # Convert image to Base64
+    encoded_image = base64.b64encode(
+        buffer.getvalue()
+    ).decode("utf-8")
+
+    return encoded_image
 
 
 # ---------------- HOME PAGE ----------------
@@ -125,11 +81,15 @@ def generate_qr(data, fill_color, back_color):
 def index():
 
     qr_image = None
+
     error = None
 
     data = ""
+
     fill_color = "#000000"
+
     back_color = "#F3EFFF"
+
     if request.method == "POST":
 
         data = request.form.get(
@@ -168,61 +128,44 @@ def index():
 
             try:
 
-                # Generate QR image
+                # Generate QR code
                 qr_image = generate_qr(
                     data,
                     fill_color,
                     back_color
                 )
 
-                # Save history
-                conn = get_db_connection()
+                # Save temporary history
+                record = {
 
-                conn.execute(
-                    """
-                    INSERT INTO qr_history
-                    (
-                        data,
-                        filename,
-                        fill_color,
-                        back_color,
-                        created_at
-                    )
-                    VALUES (?, ?, ?, ?, ?)
-                    """,
+                    "data": data,
 
-                    (
-                        data,
-                        qr_image,
-                        fill_color,
-                        back_color,
-                        datetime.now().strftime(
-                            "%d-%m-%Y %I:%M %p"
-                        )
+                    "filename": "qr-studio-code.png",
+
+                    "fill_color": fill_color,
+
+                    "back_color": back_color,
+
+                    "created_at": datetime.now().strftime(
+                        "%d-%m-%Y %I:%M %p"
                     )
+
+                }
+
+                qr_history.insert(0, record)
+
+                # Keep only the latest 10 records
+                del qr_history[10:]
+
+            except Exception as e:
+
+                app.logger.exception(
+                    "QR generation failed"
                 )
 
-                conn.commit()
-                conn.close()
-
-            except Exception:
-
                 error = "QR generation failed. Please try again."
+
                 qr_image = None
-
-    # Fetch recent history
-    conn = get_db_connection()
-
-    history = conn.execute(
-        """
-        SELECT *
-        FROM qr_history
-        ORDER BY id DESC
-        LIMIT 10
-        """
-    ).fetchall()
-
-    conn.close()
 
     return render_template(
 
@@ -230,7 +173,7 @@ def index():
 
         qr_image=qr_image,
 
-        history=history,
+        history=qr_history,
 
         error=error,
 
@@ -243,43 +186,20 @@ def index():
     )
 
 
-# ---------------- DOWNLOAD ----------------
+# ---------------- HEALTH CHECK ----------------
 
-@app.route("/download/<filename>")
-def download(filename):
+@app.route("/health")
+def health():
 
-    if not re.fullmatch(
-        r"[a-f0-9]{32}\.png",
-        filename
-    ):
-
-        return "Invalid filename", 400
-
-    filepath = os.path.join(
-        OUTPUT_FOLDER,
-        filename
-    )
-
-    if not os.path.isfile(filepath):
-
-        return "QR code not found", 404
-
-    return send_from_directory(
-
-        OUTPUT_FOLDER,
-
-        filename,
-
-        as_attachment=True
-
-    )
+    return {
+        "status": "healthy",
+        "application": "QR Studio"
+    }
 
 
-# ---------------- RUN APPLICATION ----------------
+# ---------------- LOCAL DEVELOPMENT ----------------
 
 if __name__ == "__main__":
-
-    init_db()
 
     app.run(
         debug=True,
